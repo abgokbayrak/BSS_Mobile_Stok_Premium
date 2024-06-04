@@ -84,10 +84,10 @@ class _TransferState extends State<Transfer> {
                         keyboardType: TextInputType.number,
                         style: textFieldStyle,
                         focusNode: barcodeFocusNode,
-                        onFieldSubmitted: (_) {
+                        onFieldSubmitted: (_) async {
                           if (_barcodeTextController.text.isNotEmpty &&
                               _barcodeTextController.text.length != 1) {
-                            getBarcodeInfos(_barcodeTextController.text);
+                            await getBarcodeInfos(_barcodeTextController.text);
                           } else {
                             refreshPage();
                           }
@@ -132,7 +132,7 @@ class _TransferState extends State<Transfer> {
                 children: [
                   Expanded(
                       flex: 4,
-                      child: Text("KARŞI   DEPO :  ",style: baslik,)),
+                      child: Text("KARŞI DEPO :  ",style: baslik,)),
                   Expanded(
                     flex: 10,
                     child: SizedBox(
@@ -297,7 +297,9 @@ class _TransferState extends State<Transfer> {
 
   fillTheTextFields(barcodeCount) async {
     var result = await CheckBarkodDb.getBarcodeInfo(_barcodeTextController.text);
+
     print("res $result");
+    print("res $depolar");
     await getTransferInfo();
     setState(() {
       _miktarTextController.text = barcodeCount.toString();
@@ -305,6 +307,10 @@ class _TransferState extends State<Transfer> {
       malzemeDepoID = malzemeDepo["Id"];
       malzemeDepoName = malzemeDepo["DepoAdi"];
       malzemeFabrikaID = malzemeDepo["FabrikaId"];
+      if(malzemeFabrikaID != globals.factoryId){
+        EasyLoading.showInfo("Barkodun Malzeme Deposu Farklı Fabrikada.");
+        refreshPage();
+      }
       if(result[0]["KarsiDepoId"] != null && result[0]["DepoHareketTipiId"] == 9){
         var karsiDepo = depolar.where((element) => element["Id"] == result[0]["KarsiDepoId"]).first;
         karsiDepoID = karsiDepo["Id"];

@@ -759,12 +759,14 @@ class _SettingsPageState extends State<SettingsPage> {
   updateApk() async {
     try {
       EasyLoading.show(status: "Yükleniyor...");
-      String url = "http://www.mobuy.com.tr/bobinpremium.apk";
+      String url = "http://www.mobuy.com.tr/bobin.apk";
       var dir = await getApplicationDocumentsDirectory();
-      String fileName = 'bobinpremium.apk';
+      String fileName = 'bobin.apk';
       Dio dio = Dio();
-      await dio.download(url, "${dir.path}/$fileName");
+      // await dio.download(url, "${dir.path}/$fileName");
+      print("${dir.path}/$fileName");
       await OpenFile.open("${dir.path}/$fileName");
+      // await OpenFile.open("/data/user/0/com.example.bss_mobile_premium/files/bobin2.apk");
       EasyLoading.dismiss();
     } catch (e) {
       EasyLoading.showError("Uygulama Yüklenemedi ${e.toString()}");
